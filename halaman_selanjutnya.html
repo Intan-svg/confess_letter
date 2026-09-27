@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Story for You</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fae1dd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .envlope-wrapper {
+        height: 380px;
+      }
+
+      #envelope {
+        position: relative;
+        height: 180px;
+        width: 280px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        margin-left: auto;
+        margin-right: auto;
+        top: 150px;
+        background-color: #f9c5d1;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        transition:
+          background-color 0.8s ease,
+          box-shadow 0.8s ease;
+      }
+
+      .front {
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: 3;
+      }
+
+      .flap {
+        border-left: 140px solid transparent;
+        border-right: 140px solid transparent;
+        border-bottom: 82px solid transparent;
+        border-top: 98px solid #ff99ac;
+        transform-origin: top;
+        pointer-events: none;
+        transition:
+          transform 0.5s ease,
+          opacity 0.8s ease;
+      }
+
+      .pocket {
+        border-left: 140px solid #ff758f;
+        border-right: 140px solid #ff758f;
+        border-bottom: 90px solid #ff4d6d;
+        border-top: 90px solid transparent;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        transition: opacity 0.8s ease;
+      }
+
+      .letter {
+        position: absolute;
+        background-color: #fff;
+        width: 90%;
+        margin-left: 5%;
+        height: 200px;
+        top: 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+        padding: 20px 10px;
+        box-sizing: border-box;
+        overflow: hidden;
+        transition: all 0.8s ease;
+      }
+
+      .letter::-webkit-scrollbar {
+        width: 6px;
+      }
+      .letter::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .letter::-webkit-scrollbar-thumb {
+        background: #ff99ac;
+        border-radius: 4px;
+      }
+
+      .words {
+        font-family: "Dancing Script", cursive;
+        color: #ff4d6d;
+        /* Ukuran font sedikit dikecilkan agar teks yang panjang lebih rapi */
+        font-size: 20px;
+        text-align: center;
+        line-height: 1.5;
+        margin-bottom: 15px; /* Jarak antar paragraf */
+      }
+
+      /* TAHAP 1: "OPEN" */
+      .open .flap {
+        transform: rotateX(180deg);
+        z-index: 1;
+      }
+      .open .letter {
+        transform: translateY(-100px);
+        z-index: 2;
+      }
+      .close .flap {
+        transform: rotateX(0deg);
+        z-index: 5;
+      }
+      .close .letter {
+        transform: translateY(0px);
+        z-index: 1;
+      }
+
+      .hearts {
+        position: absolute;
+        top: 90px;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        transition: opacity 0.8s ease;
+      }
+      .heart {
+        position: absolute;
+        bottom: 0;
+        right: 10%;
+        pointer-events: none;
+      }
+      .heart:before,
+      .heart:after {
+        position: absolute;
+        content: "";
+        left: 25px;
+        top: 0;
+        width: 25px;
+        height: 40px;
+        background: #ff3355;
+        border-radius: 25px 25px 0 0;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+      }
+      .heart:after {
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+      }
+
+      .close .heart {
+        opacity: 0;
+        animation: none;
+      }
+      .open .a1 {
+        left: 20%;
+        transform: scale(0.6);
+        opacity: 1;
+        animation:
+          slideUp 4s linear 1,
+          sideSway 2s ease-in-out 4 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+      .open .a2 {
+        left: 55%;
+        transform: scale(1);
+        opacity: 1;
+        animation:
+          slideUp 5s linear 1,
+          sideSway 4s ease-in-out 2 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+      .open .a3 {
+        left: 10%;
+        transform: scale(0.8);
+        opacity: 1;
+        animation:
+          slideUp 7s linear 1,
+          sideSway 2s ease-in-out 6 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+
+      @keyframes slideUp {
+        0% {
+          top: 0;
+        }
+        100% {
+          top: -600px;
+        }
+      }
+      @keyframes sideSway {
+        0% {
+          margin-left: 0px;
+        }
+        100% {
+          margin-left: 50px;
+        }
+      }
+
+      /* TAHAP 2: "EXPAND" */
+      .expand#envelope {
+        background-color: transparent;
+        box-shadow: none;
+      }
+      .expand .flap,
+      .expand .pocket,
+      .expand .hearts {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .expand .letter {
+        transform: translateY(-180px); /* Tarik kertas jauh lebih ke atas */
+        width: 500px;
+        margin-left: -110px;
+        height: 50vh; /* Tinggi kertas dipendekkan (50% dari layar) agar tidak menabrak tombol */
+        z-index: 10;
+        overflow-y: auto;
+        padding: 40px 40px 80px 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .reset {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        z-index: 20;
+        width: 100%;
+      }
+      button {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700;
+        font-size: 22px;
+        border-radius: 30px;
+        border: 2px solid #ff4d6d;
+        background: transparent;
+        color: #ff4d6d;
+        padding: 8px 30px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      button:hover {
+        background: #ff4d6d;
+        color: white;
+        box-shadow: 0 0 15px #ff4d6d;
+      }
+
+      /* Tweak tambahan untuk HP (Mobile Responsive) */
+      @media (max-width: 600px) {
+        .expand .letter {
+          width: 90vw;
+          margin-left: calc(
+            -45vw + 140px
+          ); /* Menyesuaikan dengan lebar amplop asli */
+          padding: 30px 20px 100px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="envlope-wrapper">
+      <div id="envelope" class="close">
+        <div class="front flap"></div>
+        <div class="front pocket"></div>
+
+        <!-- Kertas Surat -->
+        <div class="letter">
+          <div class="words" style="font-size: 26px">To: Sayid</div>
+
+          <div class="words">
+            Orang pertama <br />
+            yang aku kirimin surat ini <br />
+            Assalamualaikum sayid,<br />
+            Aku ga pernah bikin surat untuk orang lain, sebelumnya selalu mereka
+            yang bikin surat untuk aku. Di surat ini, aku mau ceritapertama kali
+            aku liat kamu itu di pertemuan kelas pertama. Aku mulai berani
+            ngobrol sama kamu meski aku ngeliatnya kamu gamau banyak ngomong
+            sama aku. Aku sadar kok, aku gapantes bahkan untuk jadi temen kamu.
+          </div>
+
+          <div class="words">
+            Aku mau cerita banyak hal. Pertama-tama aku mau kamu tau kalau aku
+            ga bermaksud buat bikin kamu ga nyaman. Waktu itu aku nanya kamu
+            ngerokok apa engga, cuma mau tau apakah kamu tipe perokok atau
+            engga, karena aku cuman pengen tau kamu kaya gimana.
+          </div>
+
+          <div class="words">
+            Aku suka sama kamu, sayid. Bukan sekedar rasa kagum. Rasanya tiap
+            aku liat kamu, kamu tuh bikin aku mikir kayanya memang ada deh cowo
+            yang ga ngerokok, baik, sayang sama orang tua nya, bahkan dia
+            berusaha deket sama Tuhannya. Maksud aku tuh sayid, kalau kamu gamau
+            aku kagum sama kamu, aku gaakan kagum lagi. Mungkin juga banyak
+            perempuan lain yang lebih cantik, baik, bahkan visi misinya sama
+            kaya kamu, dan kamu juga kagum sama orang itu.
+          </div>
+
+          <div class="words">
+            Aku juga berusaha kok. Aku berusaha buat gasuka sama kamu, aku
+            berusaha buat ga kagum sama kamu. Jadi kalau kamu liat aku, aku
+            bener-bener berusaha buat ga suka sama kamu dengan cara yang
+            nyebelin. Aku juga minta parfum kamu, niatnya sih mau nyamain parfum
+            sama kamu. Tapi siapa aku? Aku juga gagu kalau ditanya atau ngobrol
+            sama kamu, aku gabisa...
+          </div>
+
+          <div class="words">
+            Aku mau bilang aku bakal berhenti suka sama kamu, tapi aku juga ga
+            yakin bakal berhasil.
+          </div>
+
+          <div class="words">
+            Ngomong-ngomong soal aku yang pindah ke NR, itu karena pas Ramadhan
+            aku ditipu dan uang di Shopeepay aku ilang semua 8jt. Susah buat
+            ngomong ke orang tua karena itu juga uang yang mereka kumpulin buat
+            kuliahin aku. Butuh keberanian sampai pas bulan Juli 2026 aku
+            ngomong ke mereka dan janji bakal ganti uangnya.
+          </div>
+
+          <div class="words">
+            Aku kayanya bener-bener ngalamin stress. Pas Februari bareng Nabila
+            ke Cikuray, aku hipotermia, kaki aku kaya mau patah, aku muntah
+            berkali-kali di gunung. Tapi aku mikir ini pertama kalinya aku
+            ngajak Nabila ke Cikuray, aku gaboleh biarin dia turun cuman karena
+            aku sakit. Aku akui aku egois waktu itu, tapi temen-temen aku juga
+            egois, aku udah bilang gaakan ikut ke puncak, aku di tenda aja, tapi
+            mereka tetep maksa.
+          </div>
+
+          <div class="words">
+            Waktu ngerasa mau mati, aku inget 1 trauma yang belum aku urai,
+            masih jadi benang kusut yang akan dibiarin gitu aja. Aku janji kalau
+            aku pulang dari Cikuray aku bakal ceritain hal ini ke orang tua aku.
+          </div>
+
+          <div class="words">
+            Trauma itu terjadi pas aku kelas 2 SD. Aku beli ager di tukang ager
+            yang biasa keliling. Waktu itu aku baru pulang sekolah di hari
+            pertama aku masuk kelas 2 SD, baru naik kelas. Setelah aku beli 3rb,
+            tukang ager itu mau ngasih bonus asal temen aku duluan. Aku suruh
+            temen aku duluan aja gausah nungguin aku jajan. Dan bonusnya adalah,
+            tukang ager itu buka rok SD aku, dia masukin tangannya ke kemaluan
+            aku... yang jadi trauma aku seumur hidup.
+          </div>
+
+          <div class="words">
+            Waktu itu sempet viral di sekitar rumah aku kalau tukang ager yang
+            sama ditangkap polisi karena ketauan merkosa anak polisi yang masih
+            TK. Ketauannya awalnya orang tuanya liat pipis anaknya keluar darah,
+            setelah diselidikin akhirnya ketauan kalau tukang ager itulah
+            pelakunya.
+          </div>
+
+          <div class="words">
+            Karena aku ngedenger orang-orang ngomongin korban, mereka ga
+            ngomongin yang baik tentang korban. Mereka malah nyalahin orang
+            tuanya, "ga becus ngurus anak lah", "anaknya yang ga bener lah",
+            padahal anak itu masih TK. Dari situ aku banyak ditanyain
+            orang-orang karena ternyata temen aku yang aku suruh pergi ngeliat
+            aku dilecehin sama tukang ager itu. Aku ditanyain terus sama orang
+            tua, tapi aku ga ngaku. Aku gatau juga itu apa, aku belum tau apa
+            artinya pelecehan. Aku gatau bagian mana di tubuh aku yang gaboleh
+            disentuh orang lain. Aku juga gamau diomongin orang-orang.
+          </div>
+
+          <div class="words">
+            Setelah turun dari Gunung Cikuray dan nyeritain semuanya ke orang
+            tua, tentu aku dapat maaf dari mereka. Aku juga jadiin ini sebagai
+            pelajaran untuk ponakan aku yang perempuan agar diedukasi, diajarin
+            bagian tubuh mana aja yang boleh dan gaboleh disentuh orang lain.
+          </div>
+
+          <div class="words">
+            Tapi selain jadiin pelajaran, aku juga ngerasa aku kotor, aku
+            gapantes buat siapapun. Jadi melalui surat ini, aku akan jadikan
+            sosok kamu sebagai patokan aku menjadi diri aku yang lebih baik
+            lagi.
+          </div>
+
+          <div class="words">
+            Dulu, aku pikir menyukai seseorang itu hanya ada perasaan suka. Tapi
+            ternyata menyukai juga berarti menahan diri... menahan tangan untuk
+            tidak menghubungi, menahan bibir untuk tidak menyebut nama kamu asal
+            asalan, menahan hati untuk tidak berprasangka sembarangan.
+          </div>
+
+          <div class="words">
+            Sayid, terimakasih. Setiap liat kamu rasanya aku pengen jadi lebih
+            baik, rasanya aku pengen memantaskan diri untuk berdiri di samping
+            kamu. Tapi aku sadar kalau kamu tuh deket, kamu ada, tapi gapernah
+            bisa digapai.
+          </div>
+
+          <div class="words">
+            Saking kagumnya aku sama kamu, aku ga mencoba nulis surat ini buat
+            jadi pasangan kamu. Aku mau selalu belajar menjadi seseorang yang
+            punya kualitas seperti kamu.
+          </div>
+
+          <div class="words">
+            Jangan ngerasa kamu ga layak untuk dicintai, sayid. <br />Kamu
+            layak.
+          </div>
+        </div>
+
+        <div class="hearts">
+          <div class="heart a1"></div>
+          <div class="heart a2"></div>
+          <div class="heart a3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reset">
+      <button id="open">Open</button>
+      <button id="reset">Close</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        var envelope = $("#envelope");
+        var btn_open = $("#open");
+        var btn_reset = $("#reset");
+        var expandTimeout;
+
+        btn_open.click(function () {
+          envelope.removeClass("close").addClass("open");
+
+          // Diatur jadi 20 detik (20000ms) sesuai permintaan awal Anda
+          expandTimeout = setTimeout(function () {
+            envelope.addClass("expand");
+          }, 2000);
+        });
+
+        btn_reset.click(function () {
+          clearTimeout(expandTimeout);
+          envelope.removeClass("open expand").addClass("close");
+          $(".letter").animate({ scrollTop: 0 }, "fast");
+        });
+      });
+    </script>
+  </body>
+</html>

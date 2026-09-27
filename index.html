@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Surat untuk seseorang yang telah jadi motivasi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 150vh; 
+            background-color: black;
+            overflow-x: hidden; 
+        }
+
+        .hidden-svg {
+            position: absolute;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+        }
+
+        canvas {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1;
+            pointer-events: none; 
+        }
+
+        /* --- PERUBAHAN UTAMA: Membuat Wadah Berdampingan --- */
+        .ui-container {
+            position: absolute;
+            top: 120vh; 
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            z-index: 10;
+            text-align: center;
+            opacity: 0; 
+            width: 90%;
+            /* Flexbox untuk mensejajarkan elemen ke kiri dan kanan */
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-wrap: wrap; /* Agar aman jika dibuka di HP layarnya sempit */
+        }
+
+        /* Kotak individual untuk Story dan Question */
+        .choice-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .story-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #ffb3c6;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
+            margin-top: 0;
+        }
+
+        .love-btn {
+            background: transparent;
+            border: 2px solid #ff4d6d;
+            color: #ff4d6d;
+            padding: 12px 30px;
+            font-size: 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Dancing Script', cursive;
+            transition: 0.3s;
+        }
+
+        .love-btn:hover {
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 0 20px #ff4d6d;
+        }
+
+        #robot-container {
+            position: absolute;
+            top: 120vh; 
+            left: -150px;
+            transform: translateY(-50%);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+        }
+
+        .robot { font-size: 6rem; }
+        .arrow { font-size: 4rem; margin-left: 10px; opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <!-- SVG WAJIB -->
+    <svg viewBox="0 0 600 552" class="hidden-svg">
+        <path d="M300,107.77 C284.68,55.67 239.76,0 162.31,0 C64.83,0 0,82.08 0,171.71 c0,.48 0,.95 0,1.43 -.52,19.5 0,217.94 299.87,379.69 C600,391.08 600.52,192.64 600,173.14 c0,-.48 0,-.95 0,-1.43 C600,82.08 535.17,0 437.69,0 C360.24,0 315.32,55.67 300,107.77 Z"></path>
+    </svg>
+
+    <!-- --- PERUBAHAN UTAMA HTML: Dibagi Menjadi Dua Bagian --- -->
+    <div class="ui-container" id="ui-box">
+        
+        <!-- Pilihan Kiri (My Story) -->
+        <div class="choice-box">
+            <h1 class="story-text">my story</h1>
+            <button id="btn-story" class="love-btn">Klik untuk Lanjut</button>
+        </div>
+
+        <!-- Pilihan Kanan (My Question) -->
+        <div class="choice-box">
+            <h1 class="story-text">my question</h1>
+            <button id="btn-question" class="love-btn">Klik untuk Lanjut</button>
+        </div>
+
+    </div>
+
+
+    <script src='https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/controls/OrbitControls.js'></script>
+    <script src='https://unpkg.com/gsap@3/dist/gsap.min.js'></script>
+    
+    <!-- Script Partikel Love -->
+    <script src="./script.js"></script>
+
+    <!-- Logika Animasi UI -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const uiBox = document.getElementById('ui-box');
+            // Menyeleksi kedua tombol
+            const btnStory = document.getElementById('btn-story');
+            const btnQuestion = document.getElementById('btn-question');
+            
+            const robotContainer = document.getElementById('robot-container');
+            const arrow = document.querySelector('.arrow');
+
+            // Teks muncul menyebar setelah partikel terbentuk
+            gsap.to(uiBox, {
+                opacity: 1,
+                scale: 1,
+                duration: 2.5,
+                delay: 2, 
+                ease: "power2.out"
+            });
+
+            // Fungsi untuk menjalankan animasi saat tombol diklik
+            function jalankanAnimasi(halamanTujuan) {
+                gsap.to(uiBox, { opacity: 0, scale: 1.2, duration: 0.5 });
+
+                let tl = gsap.timeline();
+                tl.to(robotContainer, {
+                    left: "50%",
+                    xPercent: -50,
+                    duration: 1.5,
+                    ease: "back.out(1.2)"
+                })
+                .to(arrow, { opacity: 1, duration: 0.2 })
+                .to(arrow, {
+                    x: 1000,
+                    scale: 3,
+                    duration: 1,
+                    ease: "power2.in"
+                })
+                .call(() => {
+                    // Pindah ke halaman yang ditentukan
+                    window.location.href = halamanTujuan;
+                });
+            }
+
+            // Jika "my story" diklik, arahkan ke halaman_selanjutnya.html
+            btnStory.addEventListener('click', () => {
+                jalankanAnimasi("halaman_selanjutnya.html");
+            });
+
+            // Jika "my question" diklik, arahkan ke halaman_selanjutnya.html juga
+            // (Anda bisa mengganti "halaman_selanjutnya.html" di bawah ini jika nanti Anda membuat file HTML baru khusus untuk pertanyaan)
+            btnQuestion.addEventListener('click', () => {
+                jalankanAnimasi("halaman_pertanyaan.html");
+            });
+        });
+    </script>
+</body>
+</html>

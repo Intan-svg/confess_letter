@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pertanyaan Untukmu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Mengimpor font pixel retro dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            /* Latar belakang putih dengan pola titik/hati (bisa diganti dengan heart-bg.jpg Anda) */
+            background-color: #fff0f5; 
+            background-image: radial-gradient(#ffb3c6 15%, transparent 16%), radial-gradient(#ffb3c6 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Press Start 2P', cursive; /* Font Pixel */
+        }
+
+        /* Desain Jendela Retro (Bisa diganti dengan window.png Anda jika mau, tapi ini versi CSS-nya) */
+        .retro-window {
+            background-color: #ffb3c6;
+            border: 4px solid #e74c3c;
+            padding: 4px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+        }
+
+        .window-header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-content {
+            background-color: #ffccd5;
+            border: 4px solid #e74c3c;
+            padding: 30px 20px;
+            text-align: center;
+            /* Pola kotak-kotak transparan ala pixel art */
+            background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent);
+            background-size: 10px 10px;
+        }
+
+        h2 {
+            color: #000;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .cat-gif {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            image-rendering: pixelated; /* Memastikan GIF terlihat bergaya pixel */
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Jika Anda ingin pakai CSS Button bergaya Pixel */
+        .pixel-btn {
+            background-color: white;
+            border: 4px solid #e74c3c;
+            color: #e74c3c;
+            padding: 15px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .pixel-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* Menyembunyikan elemen sebelum waktunya */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="retro-window">
+        <div class="window-header">
+            <span>LOVE</span>
+            <span>- O X</span>
+        </div>
+        <div class="window-content">
+            <!-- Teks Pertanyaan Dinamis -->
+            <h2 id="question-text">Memuat pertanyaan...</h2>
+            
+            <!-- Menggunakan GIF kucing Anda -->
+            <img src="cat_heart.gif" id="cat-img" class="cat-gif" alt="Kucing Pixel">
+            
+            <div class="btn-container" id="btn-container">
+                <button class="pixel-btn" id="btn-yes">YES</button>
+                <button class="pixel-btn" id="btn-no">NO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. DAFTAR PERTANYAAN DAN GIF YANG BERUBAH
+        const questions = [
+            { text: "Apa sekarang kamu lagi punya pacar", gif: "cat_heart.gif" },
+            { text: "Pernah Pacaran?", gif: "cat_dance.gif" },
+            { text: "Pernah suka sama aku ga?", gif: "cat_heart.gif" } // Anda bisa tambah aset GIF lain di sini
+        ];
+
+        // 2. NOMOR HP ADMIN (Ganti dengan nomor WhatsApp Anda, gunakan format 628...)
+        const adminWhatsApp = "6285128040396"; 
+
+        let currentStep = 0;
+        let hasilJawaban = []; // Array untuk menyimpan jawaban crush Anda
+
+        const questionText = document.getElementById("question-text");
+        const catImg = document.getElementById("cat-img");
+        const btnYes = document.getElementById("btn-yes");
+        const btnNo = document.getElementById("btn-no");
+        const btnContainer = document.getElementById("btn-container");
+
+        // Fungsi untuk memuat pertanyaan sesuai urutan
+        function loadQuestion() {
+            if (currentStep < questions.length) {
+                questionText.innerText = questions[currentStep].text;
+                // Mengganti gambar sesuai pertanyaan
+                catImg.src = questions[currentStep].gif; 
+            } else {
+                // Jika semua pertanyaan sudah dijawab, jalankan pengiriman ke WA
+                kirimKeAdmin();
+            }
+        }
+
+        // Fungsi mencatat jawaban dan lanjut ke pertanyaan berikutnya
+        function jawabPertanyaan(jawaban) {
+            // Simpan format: "Pertanyaan: Jawaban"
+            hasilJawaban.push(`*Q${currentStep + 1}:* ${questions[currentStep].text}\n*Answer:* ${jawaban}\n`);
+            
+            currentStep++;
+            loadQuestion();
+        }
+
+        // Fungsi untuk mengarahkan ke WhatsApp dengan isi jawaban
+        function kirimKeAdmin() {
+            questionText.innerText = "makasih udah berkenan menjawab! Tunggu bentar ya...";
+            btnContainer.classList.add("hidden"); // Sembunyikan tombol
+            
+            // Menggabungkan semua jawaban menjadi satu teks panjang
+            let pesanWhatsApp = "Hai intan! Ini jawaban aku:%0A%0A";
+            
+            hasilJawaban.forEach(jwb => {
+                // %0A adalah kode URL untuk Enter/Ganti baris
+                pesanWhatsApp += encodeURIComponent(jwb) + "%0A";
+            });
+
+            // Mengarahkan langsung ke WhatsApp Anda
+            const urlWA = `https://wa.me/${adminWhatsApp}?text=${pesanWhatsApp}`;
+            
+            // Beri jeda 1.5 detik agar mereka sempat membaca teks "Terima kasih", lalu lempar ke WA
+            setTimeout(() => {
+                window.location.href = urlWA;
+            }, 1500);
+        }
+
+        // Event Listener untuk tombol
+        btnYes.addEventListener("click", () => jawabPertanyaan("YES ❤️"));
+        btnNo.addEventListener("click", () => jawabPertanyaan("NO 💔"));
+
+        // Muat pertanyaan pertama saat halaman dibuka
+        loadQuestion();
+    </script>
+</body>
+</html>
